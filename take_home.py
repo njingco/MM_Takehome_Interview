@@ -11,9 +11,20 @@ import copy
 # [1, 0, 0, 1, 0]               # [1, 3, 3, 1, 4]
 # [0, 1, 0, 1, 1]               # [5, 1, 3, 1, 1]
 
-# grid: [[],[],[]], 2d array consisting of integer >= 0
-# group_id: current gourp_id
-def group_connections_recursive(grid:list, group_id:int):
+
+""""
+FUNCTION:       group_connections
+
+INTERFACE:      grid:list ([[],[],[]]), - 2d array consisting of integer >= 0
+                group_id:int - current gourp_id
+                
+RETURNS:        list grid: modified array
+                int group_id: modified ground_id
+NOTES:
+This function takes a 2d array and groups of 0's separated by 1's. once a group is created
+it will increment the group id. This will return the modified grid and updated grid id
+""" 
+def group_connections(grid:list, group_id:int):
     if not grid:
         return 0
     
@@ -46,22 +57,20 @@ def group_connections_recursive(grid:list, group_id:int):
     return grid, group_id
 
 
-# After we get the output from the above question, implement a function that if we give any two
-# integers (greater than 1, and must be present in the image), we would connect those two
-# regions and labels as another integer which is not in the image. For example, if we have above
-# 
-# image, and two integers as 3 and 5,               # Another example would be the image with two            
-# the output should be like:                          integers as 2 and 4, the output should be   
-# [2, 2, 1, 6, 6]                                     # [2, 2, 1, 3, 3]    
-# [2, 1, 6, 6, 1]                                     # [2, 1, 3, 3, 1]
-# [1, 6, 6, 1, 4]                                     # [1, 3, 3, 1, 4]
-# [6, 6, 6, 1, 1]                                     # [5, 1, 3, 1, 1]
-#
-# if groups are 1 space away horizontal and vertical merge the two groups
-# group1: group id
-# group2: group id
-# grid: [[],[],[]], 2d array consisting of integer >= 0
-# group_id: current group_id
+"""
+FUNCTION:       merge_groups
+
+INTERFACE:      group1:int - 1st group name
+                group2:int - 2nd group name
+                grid:list ([[],[],[]]) - 2d array consisting of integer >= 0
+                group_id:int - current gourp_id
+
+RETURNS:        grid:list - modified array
+                group_id:int - modified ground_id
+NOTES:
+This function takes 2 group names and merge them including the "1" border. Then returns 
+the merged grid
+"""
 def merge_groups(group1:int, group2:int, grid:list, group_id:int):
     if not grid:
         return 0
@@ -84,41 +93,34 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
             return 
         
         #  Check if the value is not 1, group1, or group2
-        if (grid_cpy[row][col] != 1 and 
-            grid_cpy[row][col] != group1 and 
-            grid_cpy[row][col] != group2):
+        if (grid_cpy[row][col] != 1 and grid_cpy[row][col] != group1 and grid_cpy[row][col] != group2):
             return
         
         # Check if value is 1, change value to group_id if it is between group1 and 2
         if grid_cpy[row][col] == 1:
             # row edges, only check for col changes
             if (row-1) < 0 or (row+1) >= h:
-                if (grid_cpy[row][col-1] in {group1,group2,group_id} and 
-                    grid_cpy[row][col+1] in {group1,group2,group_id}):
+                if (grid_cpy[row][col-1] in {group1,group2,group_id} and grid_cpy[row][col+1] in {group1,group2,group_id}):
                     grid_cpy[row][col] = group_id
                     has_border = True
                 return 
             
             # column edge, only check for row changes
             if (col-1) < 0 or (col+1) >= w:
-                if (grid_cpy[(row-1)][col] in {group1,group2,group_id} and 
-                    grid_cpy[(row+1)][col] in {group1,group2,group_id}):
+                if (grid_cpy[(row-1)][col] in {group1,group2,group_id} and grid_cpy[(row+1)][col] in {group1,group2,group_id}):
                     grid_cpy[row][col] = group_id
                     has_border = True
                 return
             
             # everything else in the grid
-            if ((grid_cpy[row-1][col] in {group1,group2,group_id} and 
-                 grid_cpy[row+1][col] in {group1,group2,group_id}) or 
-                (grid_cpy[row][col-1] in {group1,group2,group_id} and 
-                 grid_cpy[row][col+1] in {group1,group2,group_id})):
+            if ((grid_cpy[row-1][col] in {group1,group2,group_id} and grid_cpy[row+1][col] in {group1,group2,group_id}) or 
+                (grid_cpy[row][col-1] in {group1,group2,group_id} and grid_cpy[row][col+1] in {group1,group2,group_id})):
                 grid_cpy[row][col] = group_id
                 has_border = True                                 
 
         # Change value to group_id
         else:
             grid_cpy[row][col] = group_id
-            
             dfs(row, col+1) # go right
             dfs(row, col-1) # go left 
             dfs(row+1, col) # go down
@@ -140,6 +142,12 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
 
 
 # --------------------------------------------------------------
+
+# [0, 0, 1, 0, 0]
+# [0, 1, 0, 0, 1]
+# [1, 0, 0, 1, 0]
+# [0, 1, 0, 1, 1]
+
 original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 1, 1]]
 group_id = 2
 
@@ -148,32 +156,52 @@ for i in original_grid:
     print(i)
 print("")
 
+# [2, 2, 1, 3, 3]
+# [2, 1, 3, 3, 1]
+# [1, 3, 3, 1, 4]
+# [5, 1, 3, 1, 1]
 print("Group Connection")
-grid,group_id  = group_connections_recursive(original_grid, group_id)
+grid,group_id  = group_connections(original_grid, group_id)
 for i in grid:
     print(i)
 print("")
 
 
-print("Merge Grouped Connection 2,4")
+# [2, 2, 1, 3, 3]
+# [2, 1, 3, 3, 1]
+# [1, 3, 3, 1, 4]
+# [5, 1, 3, 1, 1]
+print("Merge Grouped Connection \n2,4")
 grid_2_4,_ = merge_groups(2,4, grid, group_id)
 for i in grid_2_4:
     print(i)
 print("")
 
-print("Merge Grouped Connection 3,5")
+# [2, 2, 1, 6, 6]
+# [2, 1, 6, 6, 1]
+# [1, 6, 6, 1, 4]
+# [6, 6, 6, 1, 1]
+print("Merge Grouped Connection \n3,5")
 grid_3_5,_ = merge_groups(3,5, grid, group_id)
 for i in grid_3_5:
     print(i)
 print("")
 
-print("Merge Grouped Connection 2,5")
+# [6, 6, 1, 3, 3]
+# [6, 1, 3, 3, 1]
+# [6, 3, 3, 1, 4]
+# [6, 1, 3, 1, 1]
+print("Merge Grouped Connection \n2,5")
 grid_2_5,group_id = merge_groups(2,5, grid, group_id)
 for i in grid_2_5:
     print(i)
 print("")
 
-print("Merge Grouped Connection 3,6 from 2,5 merged grid")
+# [7, 7, 7, 7, 7]
+# [7, 7, 7, 7, 1]
+# [7, 7, 7, 1, 4]
+# [7, 7, 7, 1, 1]
+print("Merge Grouped Connection \n3,6 from 2,5 merged grid")
 grid_3_6,group_id = merge_groups(3,6, grid_2_5, group_id)
 for i in grid_3_6:
     print(i)
