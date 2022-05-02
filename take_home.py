@@ -1,17 +1,6 @@
 # !FINISH BY MONDAY
 import copy
 
-# We have a gray scale image with size of (W, H, 1), which is split into several pieces. Those split
-# lines or curves are all 1s, while the rest of the image are all 0s. Implement a function to label
-# those split regions, which means all four-way connects 0s are relabeled as a same number (>1)
-# and all unconnected regions should not have same id. For example, in python if we have an
-# input image like              # Your output should be like:
-# [0, 0, 1, 0, 0]               # [2, 2, 1, 3, 3]
-# [0, 1, 0, 0, 1]               # [2, 1, 3, 3, 1]
-# [1, 0, 0, 1, 0]               # [1, 3, 3, 1, 4]
-# [0, 1, 0, 1, 1]               # [5, 1, 3, 1, 1]
-
-
 """"
 FUNCTION:       group_connections
 
@@ -82,9 +71,7 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
     has_border = False
     
     # Depth First Search Algorithm
-    # Recursively go through the grid if it is 1, group1 or group2
-    # then changes its value to the new group_id if there is a border
-    # found in between groups
+    # Recursively go through the grid if it is 1, group1 or group2 then changes its value to the new group_id if there is a border found in between groups
     def dfs(row, col):
         nonlocal has_border 
         
