@@ -4,7 +4,7 @@ import copy
 """"
 FUNCTION:       group_connections
 
-INTERFACE:      grid:list ([[],[],[]]), - 2d array consisting of integer >= 0
+PARAMETERS:      grid:list ([[],[],[]]), - 2d array consisting of integer >= 0
                 group_id:int - current gourp_id
                 
 RETURNS:        list grid: modified array
@@ -49,7 +49,7 @@ def group_connections(grid:list, group_id:int):
 """
 FUNCTION:       merge_groups
 
-INTERFACE:      group1:int - 1st group name
+PARAMETERS:      group1:int - 1st group name
                 group2:int - 2nd group name
                 grid:list ([[],[],[]]) - 2d array consisting of integer >= 0
                 group_id:int - current gourp_id
