@@ -1,7 +1,7 @@
 # !FINISH BY MONDAY
 import copy
 
-#  We have a gray scale image with size of (W, H, 1), which is split into several pieces. Those split
+# We have a gray scale image with size of (W, H, 1), which is split into several pieces. Those split
 # lines or curves are all 1s, while the rest of the image are all 0s. Implement a function to label
 # those split regions, which means all four-way connects 0s are relabeled as a same number (>1)
 # and all unconnected regions should not have same id. For example, in python if we have an
@@ -11,10 +11,8 @@ import copy
 # [1, 0, 0, 1, 0]               # [1, 3, 3, 1, 4]
 # [0, 1, 0, 1, 1]               # [5, 1, 3, 1, 1]
 
- 
-# w: width (size of array in grid array)
-# h: height (size of grid array)
-# grid: [[],[],[]]
+# grid: [[],[],[]], 2d array consisting of integer >= 0
+# group_id: current gourp_id
 def group_connections_recursive(grid:list, group_id:int):
     if not grid:
         return 0
@@ -29,12 +27,13 @@ def group_connections_recursive(grid:list, group_id:int):
         if row<0 or col<0 or row>=h or col>=w or grid[row][col] != 0:
             return
         
-        grid[row][col] = group_id       # Change group id
+        # Change value to group_id
+        grid[row][col] = group_id       
 
-        dfs(row, col+1) # right
-        dfs(row, col-1) # left (can be commented out)
-        dfs(row+1, col) # down
-        dfs(row-1, col) # up    
+        dfs(row, col+1) # go right
+        dfs(row, col-1) # go left 
+        dfs(row+1, col) # go down
+        dfs(row-1, col) # go up    
     
     # Go through the rows and col of the grid
     for row in range(h):
@@ -43,7 +42,7 @@ def group_connections_recursive(grid:list, group_id:int):
             if grid[row][col] == 0:
                 dfs(row, col)
                 group_id +=  1
-                
+    # Return modified group and new group_id
     return grid, group_id
 
 
@@ -59,7 +58,10 @@ def group_connections_recursive(grid:list, group_id:int):
 # [6, 6, 6, 1, 1]                                     # [5, 1, 3, 1, 1]
 #
 # if groups are 1 space away horizontal and vertical merge the two groups
-
+# group1: group id
+# group2: group id
+# grid: [[],[],[]], 2d array consisting of integer >= 0
+# group_id: current group_id
 def merge_groups(group1:int, group2:int, grid:list, group_id:int):
     if not grid:
         return 0
@@ -70,17 +72,24 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
     grid_cpy = copy.deepcopy(grid)
     has_border = False
     
+    # Depth First Search Algorithm
+    # Recursively go through the grid if it is 1, group1 or group2
+    # then changes its value to the new group_id if there is a border
+    # found in between groups
     def dfs(row, col):
         nonlocal has_border 
         
+        # Check if within bounds of the array
         if (row<0 or col<0 or row>=h or col>=w): 
             return 
-             
+        
+        #  Check if the value is not 1, group1, or group2
         if (grid_cpy[row][col] != 1 and 
             grid_cpy[row][col] != group1 and 
             grid_cpy[row][col] != group2):
             return
         
+        # Check if value is 1, change value to group_id if it is between group1 and 2
         if grid_cpy[row][col] == 1:
             # row edges, only check for col changes
             if (row-1) < 0 or (row+1) >= h:
@@ -106,6 +115,7 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
                 grid_cpy[row][col] = group_id
                 has_border = True                                 
 
+        # Change value to group_id
         else:
             grid_cpy[row][col] = group_id
             
@@ -114,18 +124,22 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
             dfs(row+1, col) # go down
             dfs(row-1, col) # go up    
             
-            
+    # go through the item in the grid
     for row in range(h):
         for col in range(w):
             if grid_cpy[row][col] == group1 or grid_cpy[row][col] == group2:
                 dfs(row,col)
     
+    # If it found a border, increment group_id and return the modified array
     if has_border:
         group_id +=  1
         return grid_cpy, group_id
     
+    # Border not found, return original grid and id
     return grid, group_id
 
+
+# --------------------------------------------------------------
 original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 1, 1]]
 group_id = 2
 
