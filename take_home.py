@@ -86,24 +86,31 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
         # Check if value is 1, change value to group_id if it is between group1 and 2
         if grid_cpy[row][col] == 1:
             # row edges, only check for col changes
-            if (row-1) < 0 or (row+1) >= h:
-                if (grid_cpy[row][col-1] in {group1,group2,group_id} and grid_cpy[row][col+1] in {group1,group2,group_id}):
+            if ((row-1) < 0 or (row+1) >= h) and (col>= 1 and col < w-1):
+            # if ((row-1) < 0 or (row+1) >= h-1) and (col):
+                if (grid_cpy[row][col-1] in {group1,group2,group_id} and 
+                    grid_cpy[row][col+1] in {group1,group2,group_id}):
                     grid_cpy[row][col] = group_id
                     has_border = True
-                return 
-            
+                    return 
+                
             # column edge, only check for row changes
-            if (col-1) < 0 or (col+1) >= w:
-                if (grid_cpy[(row-1)][col] in {group1,group2,group_id} and grid_cpy[(row+1)][col] in {group1,group2,group_id}):
+            if ((col-1) < 0 or (col+1) >= w and (row>= 1 and row < h-1)):
+            # if ((col-1) < 0 or (col+1) >= w-1):
+                if (grid_cpy[(row-1)][col] in {group1,group2,group_id} and 
+                    grid_cpy[(row+1)][col] in {group1,group2,group_id}):
                     grid_cpy[row][col] = group_id
                     has_border = True
                 return
             
             # everything else in the grid
-            if ((grid_cpy[row-1][col] in {group1,group2,group_id} and grid_cpy[row+1][col] in {group1,group2,group_id}) or 
-                (grid_cpy[row][col-1] in {group1,group2,group_id} and grid_cpy[row][col+1] in {group1,group2,group_id})):
-                grid_cpy[row][col] = group_id
-                has_border = True                                 
+            if (row > 0 and row < h-1) and (col > 0 and col < w-1):
+                if ((grid_cpy[row-1][col] in {group1,group2,group_id} and 
+                    grid_cpy[row+1][col] in {group1,group2,group_id}) or 
+                    (grid_cpy[row][col-1] in {group1,group2,group_id} and 
+                    grid_cpy[row][col+1] in {group1,group2,group_id})):
+                    grid_cpy[row][col] = group_id
+                    has_border = True                                 
 
         # Change value to group_id
         else:
@@ -135,7 +142,8 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
 # [1, 0, 0, 1, 0]
 # [0, 1, 0, 1, 1]
 
-original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 1, 1]]
+# original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 1, 1]]
+original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 0, 1]]
 group_id = 2
 
 print("Original")
