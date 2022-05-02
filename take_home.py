@@ -64,6 +64,20 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
     if not grid:
         return 0
     
+    # add values in the grid to a set
+    items = set()
+    for i in grid:
+        for j in i:
+            items.add(j)
+    
+    # chek if group1 or group2 in set
+    if (group1 not in items) or (group2 not in items):
+        if (group1 not in items):
+            print(group1, "not in grid")
+        if (group2 not in items):
+            print(group2, "not in grid")
+        return grid, group_id
+    
     h = len(grid)
     w = len(grid[0])
     
@@ -142,8 +156,7 @@ def merge_groups(group1:int, group2:int, grid:list, group_id:int):
 # [1, 0, 0, 1, 0]
 # [0, 1, 0, 1, 1]
 
-# original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 1, 1]]
-original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 0, 1]]
+original_grid = [[0, 0, 1, 0, 0],[0, 1, 0, 0, 1],[1, 0, 0, 1, 0],[0, 1, 0, 1, 1]]
 group_id = 2
 
 print("Original")
